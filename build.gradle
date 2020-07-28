@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'maven-publish'
+}
+
+group 'me.geek.tom'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation 'net.dv8tion:JDA:4.1.1_165'
+
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.13.1'
+    implementation 'org.apache.logging.log4j:log4j-iostreams:2.13.1'
+
+    implementation 'org.kohsuke:github-api:1.113'
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "JoinBot",
+                "Specification-Vendor": "Tom_The_Geek",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" :"Tom_The_Geek",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "Main-Class": "me.geek.tom.joinbot.JoinBot"
+        ])
+    }
+}
+
+build.finalizedBy('shadowJar')
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'me.geek.tom'
+            artifactId = "${project.name}"
+            version = "${project.version}"
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = "TomTheGeek-Repo"
+            url = "http://maven-upload.tomthegeek.ml/"
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
