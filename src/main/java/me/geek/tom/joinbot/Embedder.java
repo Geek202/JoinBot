@@ -10,11 +10,10 @@ import java.time.LocalDate;
 
 public class Embedder {
 
-    public static MessageEmbed createError(Exception e) {
+    public static MessageEmbed createError(String message) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("JoinBot error!")
-                .setDescription("An error occurred, sorry:\n`" + e.getMessage() + "`")
-                .setAuthor("JoinBot")
+                .setDescription("An error occurred, sorry:\n`" + message + "`")
                 .setColor(Color.RED);
         return builder.build();
     }

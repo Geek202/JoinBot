@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -88,9 +89,11 @@ public class JoinBot extends ListenerAdapter {
             try {
                 configManager.reloadServerConfig(guild.getId());
                 event.getChannel().sendMessage(Embedder.createSuccess("Reloaded server config!")).queue();
-            } catch (IOException e) {
+            } catch (FileNotFoundException e) {
+                event.getChannel().sendMessage(Embedder.createError("No config found for this server!")).queue();
+            }catch (IOException e) {
                 LOGGER.warn("Failed to reload config", e);
-                event.getChannel().sendMessage(Embedder.createError(e)).queue();
+                event.getChannel().sendMessage(Embedder.createError(e.getMessage())).queue();
             }
         } else if (serverConfig != null && message.equals(serverConfig.joinCommand) && event.getChannel().getId().equals(serverConfig.verificationChannel)) {
             sendJoinMessage(member, serverConfig, guild);
