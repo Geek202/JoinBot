@@ -46,6 +46,9 @@ publishing {
             version = "${project.version}"
 
             from components.java
+            artifact(shadowJar) {
+                classifier "all"
+            }
         }
     }
 
