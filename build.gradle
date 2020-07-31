@@ -2,10 +2,14 @@ plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'maven-publish'
+    id "org.ajoberstar.grgit" version "1.7.2"
 }
 
 group 'me.geek.tom'
-version '1.0-SNAPSHOT'
+String baseVersion = '1.0'
+
+String gitRev = grgit.head().abbreviatedId
+version = baseVersion + "-git.${gitRev}"
 
 repositories {
     mavenCentral()
@@ -33,6 +37,25 @@ jar {
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "Main-Class": "me.geek.tom.joinbot.JoinBot"
         ])
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "baseVersion", baseVersion
+    inputs.property "commit", gitRev
+
+    from (sourceSets.main.resources.srcDirs) {
+        include 'version.json'
+        expand ([
+                'baseVersion': baseVersion,
+                'version': project.version,
+                'commit': gitRev
+        ])
+    }
+
+    from (sourceSets.main.resources.srcDirs) {
+        exclude 'version.json'
     }
 }
 

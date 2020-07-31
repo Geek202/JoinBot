@@ -1,0 +1,5 @@
+{
+  "version": "${version}",
+  "baseVersion": "${baseVersion}",
+  "commit": "${commit}"
+}
